@@ -6,14 +6,16 @@ import jwt from "jsonwebtoken"
 import { JWT_SECRET } from "./config.js";
 
 const User = mongoose.model("User")
+const Employee = mongoose.model("Employee")
 
 const resolvers = {
     Query:{
         first:()=>"Hello World",
-        users:()=>users_data,
+        users:async()=>await User.find({}),
         user:(_, args)=>users_data.find(user=>user._id == args._id),
         quotes:()=>quotes_data,
-        quote:(_, { id })=>quotes_data.find(quote=>quote.by == id)
+        quote:(_, { id })=>quotes_data.find(quote=>quote.by == id),
+        employees: async () => await Employee.find({})
     },
     User:{
         quotes:(ur_data)=>quotes_data.filter(quote=>quote.by == ur_data._id)
@@ -40,8 +42,8 @@ const resolvers = {
         //         ...userNew
         //     })
         //    return users_data.find(user=>user._id == _id)
-       },
-       signInUser: async (_,{userSignin})=>{
+        },
+        signInUser: async (_,{userSignin})=>{
             const user = await User.findOne({email:userSignin.email})
             if(!user) {
                 throw new Error("Email not Exist")
@@ -54,6 +56,13 @@ const resolvers = {
                     return {token}
                 }
             }
+        },
+        createEmployee: async (_, {employeeCreate}) => {
+            const newEmployee = new Employee({
+                ...employeeCreate
+            })
+
+            return await newEmployee.save()
         }
     }
 }

@@ -7,6 +7,7 @@ type Query {
     user(_id:ID!):User
     quotes: [Quote]
     quote(id:ID!):Quote
+    employees: [Employee]
 }
 
 type User {
@@ -30,6 +31,7 @@ type Token {
 type Mutation{
     signupUser(userNew:UserInput!):User
     signInUser(userSignin: UserSingnInInput): Token
+    createEmployee(employeeCreate: EmployeeInput!): Employee
 }
 input UserInput{
    fname:String!
@@ -40,6 +42,20 @@ input UserInput{
 input UserSingnInInput{
     email:String!
     password:String!
+ }
+
+ input EmployeeInput {
+    name:String!
+    department:String!
+    phone:String!
+    salary:String!
+ }
+
+ type Employee {
+    name:String!
+    department:String!
+    phone:String!
+    salary:String!
  }
 `
 
